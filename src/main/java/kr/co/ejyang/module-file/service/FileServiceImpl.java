@@ -5,7 +5,6 @@ import kr.co.ejyang.repository.FileMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,15 +12,15 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class FileServiceImpl implements FileService {
+public class FileServiceImpl implements kr.co.ejyang.service.FileService {
 
     @Autowired
     private final FileMapper fileMapper;
 
     @Override
-    @Cacheable(value = "errorCode" , key = "{#code}", cacheManager = "commonModuleCacheManager")
+//    @Cacheable(value = "errorCode" , key = "{#code}", cacheManager = "commonModuleCacheManager")
     public FileDto getFile(String code) {
-        System.out.println("no cache");
+        System.out.println("No Cache");
         return Optional.ofNullable(fileMapper.getFile("temp")).orElseThrow(RuntimeException::new);
     }
 }
