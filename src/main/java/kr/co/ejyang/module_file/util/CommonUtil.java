@@ -15,21 +15,39 @@ import static kr.co.ejyang.module_file.config.CommonConsts.*;
 @Component("CommonUtil")
 public class CommonUtil {
 
-    @Value("${file.maxSize}") // 50 MB, 최대 사이즈
-    private long maxSize;
+//    @Value("${file.maxSize}") // 50 MB, 최대 사이즈
+//    private long maxSize;
+//
+//    @Value("${file.minSize}") // 1 KB, 최소 사이즈
+//    private long minSize;
+//
+//    @Value("${file.maxLength}") // 80, 최대 파일명
+//    private long maxLength;
 
-    @Value("${file.minSize}") // 1 KB, 최소 사이즈
-    private long minSize;
+    private static long maxSize; // 50 MB, 최대 사이즈
+    private static long minSize; // 1 KB, 최소 사이즈
+    private static long maxLength; // 80, 최대 파일명
 
-    @Value("${file.maxLength}") // 80, 최대 파일명
-    private long maxLength;
+    CommonUtil(@Value("${file.maxSize}") String maxSize,
+               @Value("${file.minSize}") String minSize,
+               @Value("${file.maxLength}") String maxLength) {
+        System.out.println(maxSize);
+        System.out.println(minSize);
+        System.out.println(maxLength);
+        CommonUtil.maxSize = Long.parseLong(maxSize);
+        CommonUtil.minSize = Long.parseLong(minSize);
+        CommonUtil.maxLength = Long.parseLong(maxLength);
+        System.out.println(this.maxSize);
+        System.out.println(this.minSize);
+        System.out.println(this.maxLength);
+    }
 
 
     /*******************************************************************************************
      * 파일 검증 ( Null, 파일명, 용량, 확장자 )
      *******************************************************************************************/
     public boolean isValidFile(MultipartFile file) {
-        return !Objects.isNull(file) && isValidLength(file) && isValidSize(file) && isValidLength(file);
+        return !Objects.isNull(file) && isValidLength(file) && isValidSize(file) && isValidLength(file) && isValidExtType(file);
     }
 
 

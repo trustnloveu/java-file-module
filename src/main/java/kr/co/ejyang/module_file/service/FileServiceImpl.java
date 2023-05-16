@@ -20,10 +20,16 @@ import static kr.co.ejyang.module_file.config.CommonConsts.*;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final CommonUtil commonUtil;
+    private static CommonUtil commonUtil;
+    private static String storageEndPoint;
 
-    @Value("${storage.endpoint}")
-    private final String storageEndPoint;
+    FileServiceImpl(
+            CommonUtil commonUtil,
+            @Value("${storage.endpoint}") String storageEndPoint
+    ) {
+        FileServiceImpl.commonUtil = commonUtil;
+        FileServiceImpl.storageEndPoint = storageEndPoint;
+    }
 
     /*******************************************************************************************
      * 파일 가져오기 ( by 저장 경로 )
