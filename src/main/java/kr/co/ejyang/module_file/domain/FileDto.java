@@ -11,14 +11,20 @@ import lombok.experimental.SuperBuilder;
 public class FileDto {
 
     @NotNull
-    private String name;
+    private String orgName;
 
     @Null
-    private String path;
+    private String saveName;
+
+    @Null
+    private String savePath;
 
     @NotNull
     private long size;
 
     @NotNull
-    private String type;
+    private String extType;
+
+    @Null
+    private String saveType;
 }

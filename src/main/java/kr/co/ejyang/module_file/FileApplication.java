@@ -22,8 +22,10 @@ public class FileApplication {
 
     @PostConstruct
     private void start() {
+        System.out.println("====================== [ File Module Init ] ======================");
         System.out.println("Profile ::: " + profile);
         System.out.println("Port ::: " + port);
         System.out.println("Storage Endpoint ::: " + storageEndPoint);
+        System.out.println("==================================================================");
     }
 }

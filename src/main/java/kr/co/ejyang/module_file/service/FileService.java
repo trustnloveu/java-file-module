@@ -12,7 +12,7 @@ public interface FileService {
     FileDto getFile(String savePath);
 
     // 단일 파일 업로드
-    void uploadSingleFile(MultipartFile file);
+    FileDto uploadSingleFile(String dirType, int userIdx, MultipartFile file);
 
     // 복수 파일 업로드
     void uploadMultiFile(MultipartFile[] files);
