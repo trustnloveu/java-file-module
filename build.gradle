@@ -6,7 +6,7 @@ plugins {
 
 group = 'kr.co.upchain'
 version = '1.0.0'
-sourceCompatibility = 17
+sourceCompatibility = '17'
 
 configurations {
     compileOnly {
@@ -32,7 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     // db, mybatis
-//    implementation 'mysql:mysql-connector-java:8.0.28'
+    implementation 'mysql:mysql-connector-java:8.0.28'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc:3.0.5'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.1'
     implementation 'org.springframework:spring-tx:6.0.6'
@@ -41,6 +41,9 @@ dependencies {
     // exception logging
     implementation 'org.apache.commons:commons-lang3:3.10'
 
+    // file
+    implementation 'commons-io:commons-io:2.11.0'
+
     // redis
 //    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 //    implementation 'redis.clients:jedis:3.3.0'
@@ -48,4 +51,19 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+ext.profile = (!project.hasProperty('profile') || !profile) ? 'local' : profile
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources/resources-${profile}"
+            exclude "resources-*"
+        }
+    }
 }
