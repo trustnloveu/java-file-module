@@ -1,6 +1,5 @@
 package kr.co.ejyang.module_file.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,19 +15,18 @@ import java.io.IOException;
 import static kr.co.ejyang.module_file.config.CommonConsts.*;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class FileServiceImpl implements FileService {
 
-    private static CommonUtil commonUtil;
-    private static String storageEndPoint;
+    private final CommonUtil commonUtil;
+    private final String storageEndPoint;
 
     FileServiceImpl(
             CommonUtil commonUtil,
             @Value("${storage.endpoint}") String storageEndPoint
     ) {
-        FileServiceImpl.commonUtil = commonUtil;
-        FileServiceImpl.storageEndPoint = storageEndPoint;
+        this.commonUtil = commonUtil;
+        this.storageEndPoint = storageEndPoint;
     }
 
     /*******************************************************************************************
