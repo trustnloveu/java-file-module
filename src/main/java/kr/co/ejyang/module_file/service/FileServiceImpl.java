@@ -1,10 +1,11 @@
 package kr.co.ejyang.module_file.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
-import kr.co.ejyang.module_file.util.CommonUtil;
+import kr.co.ejyang.module_file.util.FileCommonUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import kr.co.ejyang.module_file.domain.FileDto;
@@ -18,15 +19,15 @@ import static kr.co.ejyang.module_file.config.CommonConsts.*;
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final CommonUtil commonUtil;
-    private final String storageEndPoint;
+    @Value("${storage.endpoint}")
+    private static String storageEndPoint;
 
-    FileServiceImpl(
-            CommonUtil commonUtil,
-            @Value("${storage.endpoint}") String storageEndPoint
-    ) {
-        this.commonUtil = commonUtil;
-        this.storageEndPoint = storageEndPoint;
+    private final FileCommonUtil fileCommonUtil;
+
+    // 생성자
+    @Autowired
+    FileServiceImpl(FileCommonUtil fileCommonUtil) {
+        this.fileCommonUtil = fileCommonUtil;
     }
 
     /*******************************************************************************************
@@ -58,10 +59,10 @@ public class FileServiceImpl implements FileService {
     public FileDto uploadSingleFile(String dirType, int userIdx, MultipartFile file) {
 
         // 업로드 타입 검증 ( public, private, static )
-        if (!commonUtil.isValidDirType(dirType)) return null; // TODO ::: throw 에러
+        if (!fileCommonUtil.isValidDirType(dirType)) return null; // TODO ::: throw 에러
 
         // 파일 검증 ( Null, 파일명, 확장자, 용량 )
-        if (!commonUtil.isValidFile(file)) return null; // TODO ::: throw 에러
+        if (!fileCommonUtil.isValidFile(file)) return null; // TODO ::: throw 에러
 
         String saveDirPath = null;
 
@@ -108,7 +109,7 @@ public class FileServiceImpl implements FileService {
             }
 
             // 파일명 변환 > 등록
-            String convertedFileName = commonUtil.convertFileName(file);
+            String convertedFileName = fileCommonUtil.convertFileName(file);
             String storedFilePath = saveDirPath + "/" + convertedFileName;
 
             File storeFile = new File(storedFilePath);

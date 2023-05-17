@@ -13,29 +13,19 @@ import java.util.Objects;
 import static kr.co.ejyang.module_file.config.CommonConsts.*;
 
 @Component("CommonUtil")
-public class CommonUtil {
+public class FileCommonUtil {
 
-//    @Value("${file.maxSize}") // 50 MB, 최대 사이즈
-//    private long maxSize;
-//
-//    @Value("${file.minSize}") // 1 KB, 최소 사이즈
-//    private long minSize;
-//
-//    @Value("${file.maxLength}") // 80, 최대 파일명
-//    private long maxLength;
+    @Value("${file.maxSize}")
+    private static long maxSize; // 50 MB, 최대 사이즈
 
-    private final long maxSize;     // 50 MB, 최대 사이즈
-    private final long minSize;     // 1 KB, 최소 사이즈
-    private final long maxLength;   // 80, 최대 파일명
+    @Value("${file.minSize}")
+    private static long minSize; // 1 KB, 최소 사이즈
 
-    CommonUtil(@Value("${file.maxSize}") String maxSize,
-               @Value("${file.minSize}") String minSize,
-               @Value("${file.maxLength}") String maxLength) {
-        this.maxSize = Long.parseLong(maxSize);
-        this.minSize = Long.parseLong(minSize);
-        this.maxLength = Long.parseLong(maxLength);
-    }
+    @Value("${file.maxLength}")
+    private static long maxLength; // 80, 최대 파일명
 
+    // 생성자
+    FileCommonUtil() { }
 
     /*******************************************************************************************
      * 파일 검증 ( Null, 파일명, 용량, 확장자 )
