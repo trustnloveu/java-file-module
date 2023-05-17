@@ -16,13 +16,13 @@ import static kr.co.ejyang.module_file.config.CommonConsts.*;
 public class FileCommonUtil {
 
     @Value("${file.maxSize}")
-    private static long maxSize; // 50 MB, 최대 사이즈
+    private long maxSize; // 50 MB, 최대 사이즈
 
     @Value("${file.minSize}")
-    private static long minSize; // 1 KB, 최소 사이즈
+    private long minSize; // 1 KB, 최소 사이즈
 
     @Value("${file.maxLength}")
-    private static long maxLength; // 80, 최대 파일명
+    private long maxLength; // 80, 최대 파일명
 
     // 생성자
     FileCommonUtil() { }
