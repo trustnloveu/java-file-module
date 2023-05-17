@@ -12,6 +12,7 @@ import kr.co.ejyang.module_file.domain.FileDto;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static kr.co.ejyang.module_file.config.CommonConsts.*;
 
@@ -56,7 +57,7 @@ public class FileServiceImpl implements FileService {
      * 단일 파일 업로드
      *******************************************************************************************/
     @Override
-    public FileDto uploadSingleFile(String dirType, int userIdx, MultipartFile file) {
+    public FileDto uploadSingleFile(String dirType, MultipartFile file, int userIdx) {
 
         // 업로드 타입 검증 ( public, private, static )
         if (!fileCommonUtil.isValidDirType(dirType)) return null; // TODO ::: throw 에러
@@ -86,8 +87,8 @@ public class FileServiceImpl implements FileService {
      * 복수 파일 업로드
      *******************************************************************************************/
     @Override
-    public void uploadMultiFile(MultipartFile[] files) {
-
+    public List<FileDto> uploadMultiFile(MultipartFile[] files) {
+        return null;
     }
 
 

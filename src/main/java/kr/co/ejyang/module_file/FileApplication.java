@@ -18,7 +18,13 @@ public class FileApplication {
     @Value("${storage.endpoint}")
     private String storageEndPoint;
 
-    public static void main(String[] args) { SpringApplication.run(FileApplication.class, args); }
+    public static void main(String[] args) {
+        // 프로퍼티 설정 ( application-file.properties )
+        System.setProperty("spring.config.name", "application-file");
+
+        // run
+        SpringApplication.run(FileApplication.class, args);
+    }
 
     @PostConstruct
     private void start() {
