@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 @Getter
 @Setter
 @Configuration
-@PropertySource("classpath:application-file.properties")
+@PropertySource("classpath:application-file-${spring.profiles.active}.properties")
 @ConfigurationProperties(prefix = "file")
 public class FileConfig {
 
