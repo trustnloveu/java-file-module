@@ -11,20 +11,29 @@ import lombok.experimental.SuperBuilder;
 public class FileDto {
 
     @NotNull
-    private String orgName;
+    private String orgName; // 원본 파일명
 
     @Null
-    private String saveName;
+    private String saveName; // 저장 파일명
 
     @Null
-    private String savePath;
+    private String savePath; // 저장 경로 ( 디렉토리 + 파일명 )
+//
+//    @Null
+//    private String absolutePath; // 저장 절대 경로
+//
+//    @Null
+//    private String relativePath; // 저장 상대 경로
 
     @NotNull
-    private long size;
+    private long size; // 파일욜량 ( = byte )
 
     @NotNull
-    private String extType;
+    private String extType; // 파일 확장자
 
     @Null
-    private String saveType;
+    private String saveType; // 저장 유형
+
+//    @Null
+//    private boolean isUploaded = false; // 업로드 완료 유무 ( 복수 업로드 실패 > 롤백 시 사용 )
 }
