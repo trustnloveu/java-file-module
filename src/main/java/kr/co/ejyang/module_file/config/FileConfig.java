@@ -18,7 +18,7 @@ public class FileConfig {
     private long maxSize; // 50 MB, 최대 사이즈
     private long minSize; // 1 KB, 최소 사이즈
     private long maxLength; // 80, 최대 파일명
-    private String storageEndPoint; // 80, 최대 파일명
+    private String endPoint; // 80, 최대 파일명
 
 //    @Primary
 //    @Bean

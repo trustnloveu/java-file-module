@@ -71,10 +71,10 @@ public class FileServiceImpl implements FileService {
         // 타입별 저장경로 분기처리
         switch (dirType) {
             case PUBLIC: case STATIC:
-                saveDirPath = fileConfig.getStorageEndPoint() + "/" + dirType;
+                saveDirPath = fileConfig.getEndPoint() + "/" + dirType;
                 break;
             case PRIVATE:
-                saveDirPath = fileConfig.getStorageEndPoint() + "/" + dirType + "/" + userIdx;
+                saveDirPath = fileConfig.getEndPoint() + "/" + dirType + "/" + userIdx;
                 break;
             default:
                 break;
