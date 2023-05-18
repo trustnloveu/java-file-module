@@ -1,5 +1,6 @@
 package kr.co.ejyang.module_file.util;
 
+import kr.co.ejyang.module_file.config.FileConfig;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,17 +16,13 @@ import static kr.co.ejyang.module_file.config.CommonConsts.*;
 @Component("CommonUtil")
 public class FileCommonUtil {
 
-    @Value("${file.maxSize}")
-    private long maxSize; // 50 MB, 최대 사이즈
-
-    @Value("${file.minSize}")
-    private long minSize; // 1 KB, 최소 사이즈
-
-    @Value("${file.maxLength}")
-    private long maxLength; // 80, 최대 파일명
+    // 프로퍼티 ( prefix = 'file' )
+    private final FileConfig fileConfig;
 
     // 생성자
-    FileCommonUtil() { }
+    FileCommonUtil(FileConfig fileConfig) {
+        this.fileConfig = fileConfig;
+    }
 
     /*******************************************************************************************
      * 파일 검증 ( Null, 파일명, 용량, 확장자 )
@@ -47,7 +44,7 @@ public class FileCommonUtil {
      * 파일명 길이 확인 ( isValidLength )
      *******************************************************************************************/
     private boolean isValidLength(MultipartFile file) {
-        return Objects.requireNonNull(file.getOriginalFilename()).length() <= maxLength;
+        return Objects.requireNonNull(file.getOriginalFilename()).length() <= fileConfig.getMaxLength();
     }
 
 
@@ -55,7 +52,7 @@ public class FileCommonUtil {
      * 파일 용량 확인 ( isValidLength ) - 최대/최소 사이즈 체크
      *******************************************************************************************/
     private boolean isValidSize(MultipartFile file) {
-        return file.getSize() <= maxSize && file.getSize() >= minSize;
+        return file.getSize() <= fileConfig.getMaxSize() && file.getSize() >= fileConfig.getMinSize();
     }
 
 

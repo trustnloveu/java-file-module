@@ -1,8 +1,8 @@
 package kr.co.ejyang.module_file.service;
 
+import kr.co.ejyang.module_file.config.FileConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.ejyang.module_file.util.FileCommonUtil;
@@ -20,14 +20,15 @@ import static kr.co.ejyang.module_file.config.CommonConsts.*;
 @Service
 public class FileServiceImpl implements FileService {
 
-    @Value("${storage.endpoint}")
-    private static String storageEndPoint;
-
     private final FileCommonUtil fileCommonUtil;
+
+    // 프로퍼티 ( prefix = 'file' )
+    private final FileConfig fileConfig;
 
     // 생성자
     @Autowired
-    FileServiceImpl(FileCommonUtil fileCommonUtil) {
+    FileServiceImpl(FileConfig fileConfig, FileCommonUtil fileCommonUtil) {
+        this.fileConfig = fileConfig;
         this.fileCommonUtil = fileCommonUtil;
     }
 
@@ -70,10 +71,10 @@ public class FileServiceImpl implements FileService {
         // 타입별 저장경로 분기처리
         switch (dirType) {
             case PUBLIC: case STATIC:
-                saveDirPath = storageEndPoint + "/" + dirType;
+                saveDirPath = fileConfig.getStorageEndPoint() + "/" + dirType;
                 break;
             case PRIVATE:
-                saveDirPath = storageEndPoint + "/" + dirType + "/" + userIdx;
+                saveDirPath = fileConfig.getStorageEndPoint() + "/" + dirType + "/" + userIdx;
                 break;
             default:
                 break;

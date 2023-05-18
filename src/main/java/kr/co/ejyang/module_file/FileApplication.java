@@ -9,19 +9,10 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class FileApplication {
 
-    @Value("${profile.activate}")
-    private String profile;
-
-    @Value("${server.port}")
-    private String port;
-
-    @Value("${storage.endpoint}")
+    @Value("${file.endpoint}")
     private String storageEndPoint;
 
     public static void main(String[] args) {
-        // 프로퍼티 설정 ( application-file.properties )
-        System.setProperty("spring.config.name", "application-file");
-
         // run
         SpringApplication.run(FileApplication.class, args);
     }
@@ -29,8 +20,6 @@ public class FileApplication {
     @PostConstruct
     private void start() {
         System.out.println("====================== [ File Module Init ] ======================");
-        System.out.println("Profile ::: " + profile);
-        System.out.println("Port ::: " + port);
         System.out.println("Storage Endpoint ::: " + storageEndPoint);
         System.out.println("==================================================================");
     }
