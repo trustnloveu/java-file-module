@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class FileServiceImpl implements FileService {
+public class FileServiceImplForLocal implements FileService {
 
     // 프로퍼티 ( prefix = 'file' )
     private final FileConfig fileConfig;
 
     // 생성자
     @Autowired
-    FileServiceImpl(FileConfig fileConfig) {
+    FileServiceImplForLocal(FileConfig fileConfig) {
         this.fileConfig = fileConfig;
     }
 
@@ -74,29 +74,6 @@ public class FileServiceImpl implements FileService {
     public FileDto uploadSingleFile(String savePath, String fileName, MultipartFile file) {
         return save(savePath, fileName, file);
     }
-
-//    /*******************************************************************************************
-//     * 단일 파일 업로드 (3)
-//     * @param baseDir       : 저장 디렉토리 타입 ( public, private, static )
-//     * @param extraPath     : 추가 경로 ( baseDir 이후 경로 )
-//     * @param userIdx       : 유저 IDX ( private 파일 업로드, 사용자 디렉토리명 )
-//     * @param file          : 저장 파일
-//     *******************************************************************************************/
-//    @Override
-//    public FileDto uploadSingleFile(String baseDir, String extraPath, int userIdx, MultipartFile file) {
-//        // 추가 경로
-//        baseDir +=
-//                extraPath != null && !"".equals(extraPath)
-//                        ? "/" + extraPath
-//                        : "";
-//
-//        // private 파일 경로 후처리 ( user idx 추가 )
-//        if (PRIVATE.equals(baseDir)) {
-//            baseDir += "/" + userIdx;
-//        }
-//
-//        return save(baseDir, file);
-//    }
 
     /*******************************************************************************************
      * 복수 파일 업로드
