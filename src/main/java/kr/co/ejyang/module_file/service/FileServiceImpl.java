@@ -4,19 +4,22 @@ import kr.co.ejyang.module_file.config.FileConfig;
 import kr.co.ejyang.module_file.exception.FileUploadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import kr.co.ejyang.module_file.domain.FileDto;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kr.co.ejyang.module_file.config.CommonConsts.*;
+//import static kr.co.ejyang.module_file.config.CommonConsts.*;
 
 @Slf4j
 @Service
@@ -39,9 +42,21 @@ public class FileServiceImpl implements FileService {
      * 파일 다운로드
      *******************************************************************************************/
     @Override
-    public FileDto downloadFile(String savePath) {
-//        return Optional.ofNullable(fileMapper.getFile("temp")).orElseThrow(RuntimeException::new);
-        return null;
+    public InputStreamResource downloadFile(String savePath) {
+
+        String fileName = savePath.substring(0, savePath.lastIndexOf("/"));
+
+        // 반환 Header 설정
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.add("Content-Disposition", "filename=" + fileName);
+        headers.add("Set-Cookie", "fileDownload=true; path=/");
+        // headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName);
+        // headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        // headers.add("Pragma", "no-cache");
+        // headers.add("Expires", "0");
+
+        return new InputStreamResource(download(savePath));
     }
 
     /*******************************************************************************************
@@ -63,7 +78,7 @@ public class FileServiceImpl implements FileService {
      *******************************************************************************************/
     @Override
     public FileDto uploadSingleFile(String savePath, MultipartFile file) {
-        return saveFile(savePath, file);
+        return save(savePath, file);
     }
 
     /*******************************************************************************************
@@ -73,7 +88,7 @@ public class FileServiceImpl implements FileService {
      *******************************************************************************************/
     @Override
     public FileDto uploadSingleFile(String savePath, String fileName, MultipartFile file) {
-        return saveFile(savePath, fileName, file);
+        return save(savePath, fileName, file);
     }
 
 //    /*******************************************************************************************
@@ -96,7 +111,7 @@ public class FileServiceImpl implements FileService {
 //            baseDir += "/" + userIdx;
 //        }
 //
-//        return saveFile(baseDir, file);
+//        return save(baseDir, file);
 //    }
 
     /*******************************************************************************************
@@ -114,7 +129,7 @@ public class FileServiceImpl implements FileService {
         // 파일 업로드 반복문
         try {
             for (MultipartFile file : files) {
-                FileDto fileDto = saveFile(savePath, file);
+                FileDto fileDto = save(savePath, file);
 
                 // 파일 업로드 성공 > 반환 객체 추가
                 uploadedFileList.add(fileDto);
@@ -126,7 +141,7 @@ public class FileServiceImpl implements FileService {
                     .collect(Collectors.toList());
 
             for (String path : savePathList) {
-                removeFile(path);
+                remove(path);
             }
 
             throw new FileUploadException("파일 저장에 실패했습니다.");
@@ -140,10 +155,10 @@ public class FileServiceImpl implements FileService {
     /*******************************************************************************************
      * 파일 삭제
      *
-     * @param savePath  : 저장 파일 상대 경로 ( 디렉토리 + 파일명 )
+     * @param savePath  : 저장된 파일 상대 경로 ( 디렉토리 + 파일명 )
      *******************************************************************************************/
-    public void deleteFile(String savePath) {
-        removeFile(savePath);
+    public void removeFile(String savePath) {
+        remove(savePath);
     }
 
 
@@ -155,8 +170,13 @@ public class FileServiceImpl implements FileService {
      * 파일 저장 (1)
      *  - 파일명 변환
      *  - 지정 경로 파일 저장
+     *
+     * @param savePath      : 저장 상대 경로
+     * @param file          : 업로드 요청 파일
+     *
+     * @return fileDto      : 저장된 파일 객체 정보
      *******************************************************************************************/
-    private FileDto saveFile(String savePath, MultipartFile file) {
+    private FileDto save(String savePath, MultipartFile file) {
         try {
             // 기본 경로
             String dirPath = fileConfig.getEndPoint() + savePath;
@@ -198,8 +218,14 @@ public class FileServiceImpl implements FileService {
      * 파일 저장 (2)
      *  - 파일명 외부 주입
      *  - 지정 경로 파일 저장
+     *
+     * @param savePath      : 저장 상대 경로
+     * @param file          : 업로드 요청 파일
+     * @param fileName      : 사용자 지정 파일명
+     *
+     * @return fileDto      : 저장된 파일 객체 정보
      *******************************************************************************************/
-    private FileDto saveFile(String savePath, String fileName, MultipartFile file) {
+    private FileDto save(String savePath, String fileName, MultipartFile file) {
         try {
             // 기본 경로
             String dirPath = fileConfig.getEndPoint() + savePath;
@@ -240,9 +266,9 @@ public class FileServiceImpl implements FileService {
     /*******************************************************************************************
      * 파일 삭제
      *
-     * @param savePath  : 저장 파일 경로 ( 디렉토리 + 파일명 )
+     * @param savePath  : 저장된 파일 상대 경로 ( 디렉토리 + 파일명 )
      *******************************************************************************************/
-    private void removeFile(String savePath) {
+    private void remove(String savePath) {
         // 저장 절대 경로
         String fullPath = fileConfig.getEndPoint() + savePath;
 
@@ -254,6 +280,26 @@ public class FileServiceImpl implements FileService {
         if (!isRemoved) {
             throw new FileUploadException("파일 삭제에 실패했습니다.");
         }
+    }
+
+    /*******************************************************************************************
+     * 파일 다운로드
+     *
+     * @param savePath  : 저장된 파일 상대 경로 ( 디렉토리 + 파일명 )
+     *******************************************************************************************/
+    private FileInputStream download(String savePath) {
+        try {
+            // 저장 절대 경로
+            String fullPath = fileConfig.getEndPoint() + savePath;
+
+            // 반환 Input Stream 설정
+            File file = new File(fullPath);
+
+            return new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            throw new FileUploadException("해당 경로에 파일이 존재하지 않습니다.");
+        }
+
     }
 
 }

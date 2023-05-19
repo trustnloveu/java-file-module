@@ -1,6 +1,7 @@
 package kr.co.ejyang.module_file.service;
 
 import kr.co.ejyang.module_file.domain.FileDto;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public interface FileService {
     /*******************************************************************************************
      * 파일 다운로드
      *******************************************************************************************/
-    FileDto downloadFile(String savePath);
+    InputStreamResource downloadFile(String savePath);
 
     /*******************************************************************************************
      * 단일 파일 업로드
@@ -32,5 +33,5 @@ public interface FileService {
     /*******************************************************************************************
      * 파일 삭제
      *******************************************************************************************/
-    void deleteFile(String fullPath);
+    void removeFile(String fullPath);
 }
