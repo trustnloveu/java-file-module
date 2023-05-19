@@ -18,12 +18,6 @@ public class FileDto {
 
     @Null
     private String savePath; // 저장 경로 ( 디렉토리 + 파일명 )
-//
-//    @Null
-//    private String absolutePath; // 저장 절대 경로
-//
-//    @Null
-//    private String relativePath; // 저장 상대 경로
 
     @NotNull
     private long size; // 파일욜량 ( = byte )

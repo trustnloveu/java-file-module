@@ -21,12 +21,16 @@ public interface FileService {
      * 단일 파일 업로드
      *******************************************************************************************/
     FileDto uploadSingleFile(String fullPath, MultipartFile file);
-    FileDto uploadSingleFile(String baseDir, String extraPath, int userIdx, MultipartFile file);
+    FileDto uploadSingleFile(String fullPath, String fileName, MultipartFile file);
+    // FileDto uploadSingleFile(String baseDir, String extraPath, int userIdx, MultipartFile file);
 
     /*******************************************************************************************
      * 복수 파일 업로드
      *******************************************************************************************/
-    List<FileDto> uploadMultiFile(String fullPath, MultipartFile[] file);
-    List<FileDto> uploadMultiFile(String baseDir, String extraPath, int userIdx, MultipartFile[] file);
+    List<FileDto> uploadMultiFiles(String fullPath, MultipartFile[] file);
 
+    /*******************************************************************************************
+     * 파일 삭제
+     *******************************************************************************************/
+    void deleteFile(String fullPath);
 }

@@ -31,6 +31,9 @@ public class FileServiceImpl implements FileService {
         this.fileConfig = fileConfig;
     }
 
+    // #########################################################################################
+    //                                      [ PUBLIC ]
+    // #########################################################################################
 
     /*******************************************************************************************
      * 파일 다운로드
@@ -55,53 +58,63 @@ public class FileServiceImpl implements FileService {
 
     /*******************************************************************************************
      * 단일 파일 업로드 (1)
-     * @param fullPath      : 저장 경로 ( 파일명 포함 )
+     * @param savePath      :  저장 파일 상대 경로 ( 파일명 포함 )
      * @param file          : 저장 파일
      *******************************************************************************************/
     @Override
-    public FileDto uploadSingleFile(String fullPath, MultipartFile file) {
-        return saveFile(fullPath, file);
+    public FileDto uploadSingleFile(String savePath, MultipartFile file) {
+        return saveFile(savePath, file);
     }
 
     /*******************************************************************************************
      * 단일 파일 업로드 (2)
-     * @param baseDir       : 저장 디렉토리 타입 ( public, private, static )
-     * @param extraPath     : 추가 경로 ( baseDir 이후 경로 )
-     * @param userIdx       : 유저 IDX ( private 파일 업로드, 사용자 디렉토리명 )
+     * @param savePath      :  저장 파일 상대 경로 ( 파일명 포함 )
      * @param file          : 저장 파일
      *******************************************************************************************/
     @Override
-    public FileDto uploadSingleFile(String baseDir, String extraPath, int userIdx, MultipartFile file) {
-        // 추가 경로
-        baseDir +=
-                extraPath != null && !"".equals(extraPath)
-                        ? "/" + extraPath
-                        : "";
-
-        // private 파일 경로 후처리 ( user idx 추가 )
-        if (PRIVATE.equals(baseDir)) {
-            baseDir += "/" + userIdx;
-        }
-
-        return saveFile(baseDir, file);
+    public FileDto uploadSingleFile(String savePath, String fileName, MultipartFile file) {
+        return saveFile(savePath, fileName, file);
     }
 
+//    /*******************************************************************************************
+//     * 단일 파일 업로드 (3)
+//     * @param baseDir       : 저장 디렉토리 타입 ( public, private, static )
+//     * @param extraPath     : 추가 경로 ( baseDir 이후 경로 )
+//     * @param userIdx       : 유저 IDX ( private 파일 업로드, 사용자 디렉토리명 )
+//     * @param file          : 저장 파일
+//     *******************************************************************************************/
+//    @Override
+//    public FileDto uploadSingleFile(String baseDir, String extraPath, int userIdx, MultipartFile file) {
+//        // 추가 경로
+//        baseDir +=
+//                extraPath != null && !"".equals(extraPath)
+//                        ? "/" + extraPath
+//                        : "";
+//
+//        // private 파일 경로 후처리 ( user idx 추가 )
+//        if (PRIVATE.equals(baseDir)) {
+//            baseDir += "/" + userIdx;
+//        }
+//
+//        return saveFile(baseDir, file);
+//    }
+
     /*******************************************************************************************
-     * 복수 파일 업로드 (1)
-     * @param fullPath              : 저장 경로 ( 파일명 포함 )
+     * 복수 파일 업로드
+     * @param savePath              : 저장 파일 상대 경로 ( 파일명 포함 )
      * @param files                 : 저장 파일 리스트
      *
      * @return uploadedFileList     : 업로드된 파일 리스트
      *******************************************************************************************/
     @Override
-    public List<FileDto> uploadMultiFile(String fullPath, MultipartFile[] files) {
+    public List<FileDto> uploadMultiFiles(String savePath, MultipartFile[] files) {
 
         List<FileDto> uploadedFileList = new ArrayList<>();
 
         // 파일 업로드 반복문
         try {
             for (MultipartFile file : files) {
-                FileDto fileDto = saveFile(fullPath, file);
+                FileDto fileDto = saveFile(savePath, file);
 
                 // 파일 업로드 성공 > 반환 객체 추가
                 uploadedFileList.add(fileDto);
@@ -112,8 +125,8 @@ public class FileServiceImpl implements FileService {
                     .map(FileDto::getSavePath)
                     .collect(Collectors.toList());
 
-            for (String savePath : savePathList) {
-                removeFile(savePath);
+            for (String path : savePathList) {
+                removeFile(path);
             }
 
             throw new FileUploadException("파일 저장에 실패했습니다.");
@@ -123,33 +136,33 @@ public class FileServiceImpl implements FileService {
         return uploadedFileList;
     }
 
+
     /*******************************************************************************************
-     * 복수 파일 업로드 (2)
-     * @param baseDir               : 저장 디렉토리 타입 ( public, private, static )
-     * @param extraPath             : 추가 경로 ( baseDir 이후 경로 )
-     * @param userIdx               : 유저 IDX ( private 파일 업로드, 사용자 디렉토리명 )
-     * @param files                 : 저장 파일 리스트
+     * 파일 삭제
      *
-     * @return uploadedFileList     : 업로드된 파일 리스트
+     * @param savePath  : 저장 파일 상대 경로 ( 디렉토리 + 파일명 )
      *******************************************************************************************/
-    @Override
-    public List<FileDto> uploadMultiFile(String baseDir, String extraPath, int userIdx, MultipartFile[] files) {
-        return null;
+    public void deleteFile(String savePath) {
+        removeFile(savePath);
     }
 
 
+    // #########################################################################################
+    //                                      [ PRIVATE ]
+    // #########################################################################################
+
     /*******************************************************************************************
-     * 파일 저장
+     * 파일 저장 (1)
      *  - 파일명 변환
      *  - 지정 경로 파일 저장
      *******************************************************************************************/
     private FileDto saveFile(String savePath, MultipartFile file) {
         try {
             // 기본 경로
-            String saveFullPath = fileConfig.getEndPoint() + "/" + savePath;
+            String dirPath = fileConfig.getEndPoint() + savePath;
 
             // 저장 디렉토리
-            File dir = new File(saveFullPath);
+            File dir = new File(dirPath);
 
             // 디렉토리가 확인되지 않을 경우 > 디렉토리 생성
             if (!dir.exists()) {
@@ -161,21 +174,15 @@ public class FileServiceImpl implements FileService {
             }
 
             // 저장 경로 + 파일명
-            String storedFilePath = saveFullPath + "/" + file.getOriginalFilename();
+            String absolutePath = dirPath + "/" + file.getOriginalFilename();   // 절대 경로 > 파일 저장
+            String relativePath = savePath + "/" + file.getOriginalFilename();  // 상대 경로 > DB 저장
 
-            // 파일명 변환 > 등록
-            // String convertedFileName = fileCommonUtil.convertFileName(file);
-            // String storedFilePath = savePath + "/" + convertedFileName;
-
-            // TODO ::: 중복체크 ( 동일 경로 & 파일명 )
-            // ...
-
-            File storeFile = new File(storedFilePath);
+            File storeFile = new File(absolutePath);
             file.transferTo(storeFile);
 
             // 저장 정보 반환
             return FileDto.builder()
-                    .savePath(storedFilePath)
+                    .savePath(relativePath)
                     .orgName(file.getOriginalFilename())
                     .saveName(file.getOriginalFilename())
                     .extType(FilenameUtils.getExtension(file.getOriginalFilename()))
@@ -188,13 +195,59 @@ public class FileServiceImpl implements FileService {
     }
 
     /*******************************************************************************************
+     * 파일 저장 (2)
+     *  - 파일명 외부 주입
+     *  - 지정 경로 파일 저장
+     *******************************************************************************************/
+    private FileDto saveFile(String savePath, String fileName, MultipartFile file) {
+        try {
+            // 기본 경로
+            String dirPath = fileConfig.getEndPoint() + savePath;
+
+            // 저장 디렉토리
+            File dir = new File(dirPath);
+
+            // 디렉토리가 확인되지 않을 경우 > 디렉토리 생성
+            if (!dir.exists()) {
+                boolean isDirCreated = dir.mkdirs();
+
+                if (!isDirCreated) {
+                    throw new FileUploadException("지정된 경로에 디렉토리를 생성하는데 실패했습니다.");
+                }
+            }
+
+            // 저장 경로 + 파일명
+            String absolutePath = dirPath + "/" + fileName;   // 절대 경로 > 파일 저장
+            String relativePath = savePath + "/" + fileName;  // 상대 경로 > DB 저장
+
+            File storeFile = new File(absolutePath);
+            file.transferTo(storeFile);
+
+            // 저장 정보 반환
+            return FileDto.builder()
+                    .savePath(relativePath)
+                    .orgName(file.getOriginalFilename())    // 원본 파일명
+                    .saveName(fileName)                     // 입력받은 파일명
+                    .extType(FilenameUtils.getExtension(file.getOriginalFilename()))
+                    .size(file.getSize())
+                    .build();
+
+        } catch (IOException e) {
+            throw new FileUploadException("파일 저장에 실패했습니다.");
+        }
+    }
+
+    /*******************************************************************************************
      * 파일 삭제
      *
-     * @param saveFilePath  : 저장 파일 경로 ( 디렉토리 + 파일명 )
+     * @param savePath  : 저장 파일 경로 ( 디렉토리 + 파일명 )
      *******************************************************************************************/
-    private void removeFile(String saveFilePath) {
+    private void removeFile(String savePath) {
+        // 저장 절대 경로
+        String fullPath = fileConfig.getEndPoint() + savePath;
+
         // 파일 삭제
-        File targetFile = new File(saveFilePath);
+        File targetFile = new File(fullPath);
         boolean isRemoved = targetFile.delete();
 
         // 파일 삭제 실패
