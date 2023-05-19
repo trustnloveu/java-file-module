@@ -5,8 +5,6 @@ import kr.co.ejyang.module_file.exception.FileUploadException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.apache.commons.io.FilenameUtils;
@@ -42,19 +40,6 @@ public class FileServiceImpl implements FileService {
      *******************************************************************************************/
     @Override
     public InputStreamResource downloadFile(String savePath) {
-
-        String fileName = savePath.substring(0, savePath.lastIndexOf("/"));
-
-        // 반환 Header 설정
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.add("Content-Disposition", "filename=" + fileName);
-        headers.add("Set-Cookie", "fileDownload=true; path=/");
-        // headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename="+fileName);
-        // headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        // headers.add("Pragma", "no-cache");
-        // headers.add("Expires", "0");
-
         return new InputStreamResource(download(savePath));
     }
 
