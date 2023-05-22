@@ -2,7 +2,6 @@ package kr.co.ejyang.module_file.util;
 
 import kr.co.ejyang.module_file.config.FileConfig;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

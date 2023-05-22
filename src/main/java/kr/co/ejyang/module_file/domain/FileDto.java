@@ -25,8 +25,8 @@ public class FileDto {
     @NotNull
     private String extType; // 파일 확장자
 
-    @Null
-    private String saveType; // 저장 유형
+//    @Null
+//    private String saveType; // 저장 유형
 
 //    @Null
 //    private boolean isUploaded = false; // 업로드 완료 유무 ( 복수 업로드 실패 > 롤백 시 사용 )
