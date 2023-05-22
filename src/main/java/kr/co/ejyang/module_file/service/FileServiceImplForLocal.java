@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//import static kr.co.ejyang.module_file.config.CommonConsts.*;
-
 @Slf4j
 @Service
 public class FileServiceImplForLocal implements FileService {
