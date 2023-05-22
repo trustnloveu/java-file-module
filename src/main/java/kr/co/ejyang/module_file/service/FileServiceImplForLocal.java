@@ -105,7 +105,7 @@ public class FileServiceImplForLocal implements FileService {
                 remove(path);
             }
 
-            throw new FileUploadException("파일 저장에 실패했습니다.");
+            throw new FileUploadException(e.getMessage());
         }
 
         // 업로드 파일 정보 반환
@@ -171,7 +171,7 @@ public class FileServiceImplForLocal implements FileService {
                     .build();
 
         } catch (IOException e) {
-            throw new FileUploadException("파일 저장에 실패했습니다.");
+            throw new FileUploadException(String.format("파일 저장에 실패했습니다. ( %s, %s )", savePath, file.getOriginalFilename()));
         }
     }
 
@@ -220,7 +220,7 @@ public class FileServiceImplForLocal implements FileService {
                     .build();
 
         } catch (IOException e) {
-            throw new FileUploadException("파일 저장에 실패했습니다.");
+            throw new FileUploadException(String.format("파일 저장에 실패했습니다. ( %s, %s )", savePath, file.getOriginalFilename()));
         }
     }
 
@@ -239,7 +239,7 @@ public class FileServiceImplForLocal implements FileService {
 
         // 파일 삭제 실패
         if (!isRemoved) {
-            throw new FileUploadException("파일 삭제에 실패했습니다.");
+            throw new FileUploadException(String.format("해당 경로에 파일이 존재하지 않습니다. ( %s )", savePath));
         }
     }
 
@@ -258,7 +258,7 @@ public class FileServiceImplForLocal implements FileService {
 
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            throw new FileUploadException("해당 경로에 파일이 존재하지 않습니다.");
+            throw new FileUploadException(String.format("해당 경로에 파일이 존재하지 않습니다. ( %s )", savePath));
         }
 
     }
