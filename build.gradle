@@ -32,15 +32,11 @@ dependencies {
     // validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // exception logging
+    // data
     implementation 'org.apache.commons:commons-lang3:3.10'
 
     // file
     implementation 'commons-io:commons-io:2.11.0'
-
-    // redis
-//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-//    implementation 'redis.clients:jedis:3.3.0'
 }
 
 test {
