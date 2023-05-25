@@ -42,18 +42,6 @@ public class FileServiceImplForLocal implements FileService {
     }
 
     /*******************************************************************************************
-     * 파일 정보 확인 ( 확장자, 용량, 파일명 )
-     *******************************************************************************************/
-    @Override
-    public FileDto getFileInfo(MultipartFile file) {
-        return FileDto.builder()
-                .orgName(file.getOriginalFilename())
-                .extType(FilenameUtils.getExtension(file.getOriginalFilename()))
-                .size(file.getSize())
-                .build();
-    }
-
-    /*******************************************************************************************
      * 단일 파일 업로드 (1)
      * @param savePath      :  저장 파일 상대 경로 ( 파일명 포함 )
      * @param file          : 저장 파일
