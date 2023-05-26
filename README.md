@@ -1,27 +1,33 @@
-# module-file-util
-파일 관련 공통 유틸
+# module-file
+파일 스토리지 관리 모듈
 
 ## 프로젝트 구성
 ```shell
-module-file-util
+module_file
 └── src
     └── main
-        └── java
-            └── module_file_util
-        ├── config
-        │   └── CommonConsts.java
-        └── util
-          └── FileCommonUtil.java
+        ├── module_file
+        │   ├── config
+        │   ├── domain
+        │   ├── exception
+        │   └── service
+        └── resources
+            └── application-{profile}.properties
 ```
 
-## 유틸관련 상수 관리 ( CommonConsts.java )
+## 서비스 함수 ( FileServiceImlpForLocal.java )
 
-    + 파일 검증 상수값 관리 ( 용량, 확장자, 스토리지 디렉토리명, etc ... )
+* 외부에서 호출할 수 있는 public 함수 선언
+* 서버 로컬 스토리지 파일 관리
 
-## 유틸리티 함수 ( FileCommonUtil.java )
+```shell
+- downloadFile : 파일 다운로드
+- uploadSingleFile : 단일 파일 업로드
+- uploadMultiFiles : 복수 파일 업로드
+- removeFile : 파일 삭제
+```
 
-외부에서 호출할 수 있는 public 함수 선언
+## 프로젝트 프로퍼티 ( FileConfig.java )
 
-    + isValidFile : 파일 유효성 검증
-    + isValidDirType : 스토리지 디렉토리 검증
-    + convertFileName : 파일명 변환
+* 파일 저장 경로 ( file.endPoint ) 정보
+  & application-{profile}.properties 명시
