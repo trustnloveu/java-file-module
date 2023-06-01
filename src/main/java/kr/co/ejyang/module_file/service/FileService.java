@@ -12,6 +12,7 @@ public interface FileService {
      * 파일 다운로드
      *******************************************************************************************/
     InputStreamResource downloadFile(String savePath);
+    InputStreamResource downloadFile(String savePath, String description);
 
     /*******************************************************************************************
      * 단일 파일 업로드

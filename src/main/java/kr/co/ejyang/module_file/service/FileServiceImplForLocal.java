@@ -34,11 +34,20 @@ public class FileServiceImplForLocal implements FileService {
     // #########################################################################################
 
     /*******************************************************************************************
-     * 파일 다운로드
+     * 파일 다운로드 (1) - 경로 Only
      *******************************************************************************************/
     @Override
     public InputStreamResource downloadFile(String savePath) {
         return new InputStreamResource(download(savePath));
+    }
+
+
+    /*******************************************************************************************
+     * 파일 다운로드 (2) - 경로 + 상세
+     *******************************************************************************************/
+    @Override
+    public InputStreamResource downloadFile(String savePath, String description) {
+        return new InputStreamResource(download(savePath), description);
     }
 
     /*******************************************************************************************
