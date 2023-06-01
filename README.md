@@ -27,7 +27,12 @@ module_file
 - removeFile : 파일 삭제
 ```
 
+## 서비스 함수 ( FileServiceImlpForAWS.java ) - 미구현
+
+* 외부에서 호출할 수 있는 public 함수 선언
+* AWS 클라우드 스토리지 파일 관리
+
+
 ## 프로젝트 프로퍼티 ( FileConfig.java )
 
-* 파일 저장 경로 ( file.endPoint ) 정보
-  & application-{profile}.properties 명시
+* `file.endPoint` : 파일 저장 경로 ( Storage EndPoint )
