@@ -1,33 +1,23 @@
 package kr.co.ejyang.module_file.domain;
 
-import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
 
 @Data
-@SuperBuilder
-@RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
 public class FileDto {
 
-    @NotNull
-    private String orgName; // 원본 파일명
+    private String orgName;         // 원본 파일명
+    private String saveName;        // 저장 파일명
+    private String rootDirPath;     // 저장 경로 1 ( 베이스 디렉토리 )
+    private String saveDirPath;     // 저장 경로 2 ( 사용자 지정 디렉토리 )
+    private String fullPath;        // 전체 경로 3 ( 베이스 경로 + 사용자 지정 경로 + 파일명 )
+    private String url;             // 서버 URL
+    private String fileUri;         // 파일 URI
+    private long size;              // 파일용량 ( = byte )
+    private String fileType;        // 파일 타입 ( public, private )
+    private String extType;         // 파일 확장자
 
-    @Null
-    private String saveName; // 저장 파일명
-
-    @Null
-    private String savePath; // 저장 경로 ( 디렉토리 + 파일명 )
-
-    @NotNull
-    private long size; // 파일욜량 ( = byte )
-
-    @NotNull
-    private String extType; // 파일 확장자
-
-//    @Null
-//    private String saveType; // 저장 유형
-
-//    @Null
-//    private boolean isUploaded = false; // 업로드 완료 유무 ( 복수 업로드 실패 > 롤백 시 사용 )
 }
