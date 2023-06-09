@@ -177,6 +177,7 @@ public class FileServiceImplForLocal implements FileService {
 
             // 저장 정보 반환
             return FileDto.builder()
+                    .storageKey(storageKey)
                     .orgName(file.getOriginalFilename())
                     .saveName(file.getOriginalFilename())
                     .saveDirPath(saveDirPath)
@@ -229,6 +230,7 @@ public class FileServiceImplForLocal implements FileService {
 
             // 저장 정보 반환
             return FileDto.builder()
+                    .storageKey(storageKey)
                     .orgName(file.getOriginalFilename())
                     .saveName(fileName)
                     .saveDirPath(saveDirPath)
