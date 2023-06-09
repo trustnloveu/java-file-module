@@ -145,8 +145,8 @@ public class FileServiceImplForLocal implements FileService {
      *******************************************************************************************/
     private FileDto save(String saveType, String saveDirPath, MultipartFile file) {
         try {
-            // 기본 경로
-            String dirPath = fileConfig.getEndPoint() + saveDirPath;
+            // 기본 경로 ( = /{storageEndPoint}/{saveType}/{saveDirPath} )
+            String dirPath = setFileUploadPath(saveType, saveDirPath);
 
             // 저장 디렉토리
             File dir = new File(dirPath);
@@ -199,8 +199,8 @@ public class FileServiceImplForLocal implements FileService {
      *******************************************************************************************/
     private FileDto save(String saveType, String saveDirPath, String fileName, MultipartFile file) {
         try {
-            // 기본 경로
-            String dirPath = fileConfig.getEndPoint() + saveDirPath;
+            // 기본 경로 ( = /{storageEndPoint}/{saveType}/{saveDirPath} )
+            String dirPath = setFileUploadPath(saveType, saveDirPath);
 
             // 저장 디렉토리
             File dir = new File(dirPath);
@@ -292,5 +292,16 @@ public class FileServiceImplForLocal implements FileService {
         }
 
     }
+
+    /*******************************************************************************************
+     * 파일 업로드 경로 설정 ( = /{storageEndPoint}/{saveType}/{saveDirPath} )
+     *
+     * @param saveType      : 파일 타입 ( public, private )
+     * @param saveDirPath   : 파일 저장 경로 ( 사용자 입력 )
+     *******************************************************************************************/
+    private String setFileUploadPath(String saveType, String saveDirPath) {
+        return fileConfig.getEndPoint() + "/" + saveType + "/" + saveDirPath;
+    }
+
 
 }
