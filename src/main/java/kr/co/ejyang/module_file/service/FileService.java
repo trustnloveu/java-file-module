@@ -23,17 +23,18 @@ public interface FileService {
     /*******************************************************************************************
      * 단일 파일 업로드
      *******************************************************************************************/
-    FileDto uploadSingleFile(String saveType, String fullPath, MultipartFile file);
-    FileDto uploadSingleFile(String saveType, String fullPath, String fileName, MultipartFile file);
+    FileDto uploadSingleFile(String storageKey,String saveType, String fullPath, MultipartFile file);
+    FileDto uploadSingleFile(String storageKey,String saveType, String fullPath, String fileName, MultipartFile file);
     // FileDto uploadSingleFile(String baseDir, String extraPath, int userIdx, MultipartFile file);
 
     /*******************************************************************************************
      * 복수 파일 업로드
      *******************************************************************************************/
-    List<FileDto> uploadMultiFiles(String saveType, String fullPath, MultipartFile[] file);
+    List<FileDto> uploadMultiFiles(String storageKey, String saveType, String fullPath, MultipartFile[] file);
 
     /*******************************************************************************************
      * 파일 삭제
      *******************************************************************************************/
     void removeFile(String fullPath);
+
 }

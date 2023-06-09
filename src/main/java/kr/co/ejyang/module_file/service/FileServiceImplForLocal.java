@@ -72,8 +72,8 @@ public class FileServiceImplForLocal implements FileService {
      * @param file          : 저장 파일
      *******************************************************************************************/
     @Override
-    public FileDto uploadSingleFile(String saveType, String saveDirPath, MultipartFile file) {
-        return save(saveType, saveDirPath, file);
+    public FileDto uploadSingleFile(String storageKey, String saveType, String saveDirPath, MultipartFile file) {
+        return save(storageKey, saveType, saveDirPath, file);
     }
 
     /*******************************************************************************************
@@ -83,8 +83,8 @@ public class FileServiceImplForLocal implements FileService {
      * @param file          : 저장 파일
      *******************************************************************************************/
     @Override
-    public FileDto uploadSingleFile(String saveType, String saveDirPath, String fileName, MultipartFile file) {
-        return save(saveType, saveDirPath, fileName, file);
+    public FileDto uploadSingleFile(String storageKey, String saveType, String saveDirPath, String fileName, MultipartFile file) {
+        return save(storageKey, saveType, saveDirPath, fileName, file);
     }
 
     /*******************************************************************************************
@@ -95,7 +95,7 @@ public class FileServiceImplForLocal implements FileService {
      * @return uploadedFileList     : 업로드된 파일 리스트
      *******************************************************************************************/
     @Override
-    public List<FileDto> uploadMultiFiles(String saveType, String saveDirPath, MultipartFile[] files) {
+    public List<FileDto> uploadMultiFiles(String storageKey, String saveType, String saveDirPath, MultipartFile[] files) {
 
         String targetFileName = ""; // 업로드 중 에러 발생 시, 로깅에 사용
         List<FileDto> uploadedFileList = new ArrayList<>();
@@ -104,7 +104,7 @@ public class FileServiceImplForLocal implements FileService {
         try {
             for (MultipartFile file : files) {
                 targetFileName = file.getOriginalFilename();
-                FileDto fileDto = save(saveType, saveDirPath, file);
+                FileDto fileDto = save(storageKey, saveType, saveDirPath, file);
 
                 // 파일 업로드 성공 > 반환 객체 추가
                 uploadedFileList.add(fileDto);
@@ -152,10 +152,10 @@ public class FileServiceImplForLocal implements FileService {
      *
      * @return fileDto      : 저장된 파일 객체 정보
      *******************************************************************************************/
-    private FileDto save(String saveType, String saveDirPath, MultipartFile file) {
+    private FileDto save(String storageKey, String saveType, String saveDirPath, MultipartFile file) {
         try {
             // 기본 경로 ( = /{storageEndPoint}/{saveType}/{saveDirPath} )
-            String dirPath = setFileUploadPath(saveType, saveDirPath);
+            String dirPath = setFileUploadPath(storageKey, saveType, saveDirPath);
 
             // 저장 디렉토리
             File dir = new File(dirPath);
@@ -180,7 +180,7 @@ public class FileServiceImplForLocal implements FileService {
                     .orgName(file.getOriginalFilename())
                     .saveName(file.getOriginalFilename())
                     .saveDirPath(saveDirPath)
-                    .fullPath(fullPath)
+                    .fullPath(fullPath.replace(fileConfig.getEndPoint(), "")) // Storage 경로 제외 ( 외부 노출 X )
                     .url(fileConfig.getUrl())
                     .size(file.getSize())
                     .fileType(saveType)
@@ -204,10 +204,10 @@ public class FileServiceImplForLocal implements FileService {
      *
      * @return fileDto      : 저장된 파일 객체 정보
      *******************************************************************************************/
-    private FileDto save(String saveType, String saveDirPath, String fileName, MultipartFile file) {
+    private FileDto save(String storageKey, String saveType, String saveDirPath, String fileName, MultipartFile file) {
         try {
             // 기본 경로 ( = /{storageEndPoint}/{saveType}/{saveDirPath} )
-            String dirPath = setFileUploadPath(saveType, saveDirPath);
+            String dirPath = setFileUploadPath(storageKey, saveType, saveDirPath);
 
             // 저장 디렉토리
             File dir = new File(dirPath);
@@ -232,7 +232,7 @@ public class FileServiceImplForLocal implements FileService {
                     .orgName(file.getOriginalFilename())
                     .saveName(fileName)
                     .saveDirPath(saveDirPath)
-                    .fullPath(fullPath)
+                    .fullPath(fullPath.replace(fileConfig.getEndPoint(), "")) // Storage 경로 제외 ( 외부 노출 X )
                     .url(fileConfig.getUrl())
                     .size(file.getSize())
                     .fileType(saveType)
@@ -313,8 +313,8 @@ public class FileServiceImplForLocal implements FileService {
      * @param saveType      : 파일 타입 ( public, private )
      * @param saveDirPath   : 파일 저장 경로 ( 사용자 입력 )
      *******************************************************************************************/
-    private String setFileUploadPath(String saveType, String saveDirPath) {
-        return fileConfig.getEndPoint() + "/" + saveType + saveDirPath;
+    private String setFileUploadPath(String storageKey, String saveType, String saveDirPath) {
+        return fileConfig.getEndPoint() + "/" + storageKey + "/" + saveType + saveDirPath;
     }
 
 }
