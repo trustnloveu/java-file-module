@@ -300,7 +300,7 @@ public class FileServiceImplForLocal implements FileService {
      * @param saveDirPath   : 파일 저장 경로 ( 사용자 입력 )
      *******************************************************************************************/
     private String setFileUploadPath(String saveType, String saveDirPath) {
-        return fileConfig.getEndPoint() + "/" + saveType + "/" + saveDirPath;
+        return fileConfig.getEndPoint() + "/" + saveType + saveDirPath;
     }
 
 
