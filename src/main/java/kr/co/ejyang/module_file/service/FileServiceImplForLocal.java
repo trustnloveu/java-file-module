@@ -30,11 +30,20 @@ public class FileServiceImplForLocal implements FileService {
     // #########################################################################################
 
     /*******************************************************************************************
-     * 파일 조회
-     * @param fullPath      : 전체 경로
+     * Private 파일 조회
+     * @param fullPath      : 전체 경로 ( rootPath 포함 O )
      *******************************************************************************************/
     @Override
-    public byte[] getFile(String fullPath) {
+    public byte[] getPrivateFile(String fullPath) {
+        return get(fullPath);
+    }
+
+    /*******************************************************************************************
+     * Public 파일 조회
+     * @param fullPath      : 전체 경로 ( rootPath 포함 X )
+     *******************************************************************************************/
+    @Override
+    public byte[] getPublicFile(String fullPath) {
         return get(fullPath);
     }
 
@@ -170,11 +179,9 @@ public class FileServiceImplForLocal implements FileService {
             return FileDto.builder()
                     .orgName(file.getOriginalFilename())
                     .saveName(file.getOriginalFilename())
-                    .rootDirPath(fileConfig.getEndPoint())
                     .saveDirPath(saveDirPath)
                     .fullPath(fullPath)
                     .url(fileConfig.getUrl())
-                    .fileUri(fileConfig.getUrl() + fullPath)
                     .size(file.getSize())
                     .fileType(saveType)
                     .extType(FilenameUtils.getExtension(file.getOriginalFilename()))
@@ -224,11 +231,9 @@ public class FileServiceImplForLocal implements FileService {
             return FileDto.builder()
                     .orgName(file.getOriginalFilename())
                     .saveName(fileName)
-                    .rootDirPath(fileConfig.getEndPoint())
                     .saveDirPath(saveDirPath)
                     .fullPath(fullPath)
                     .url(fileConfig.getUrl())
-                    .fileUri(fileConfig.getUrl() + fullPath)
                     .size(file.getSize())
                     .fileType(saveType)
                     .extType(FilenameUtils.getExtension(file.getOriginalFilename()))
@@ -245,6 +250,9 @@ public class FileServiceImplForLocal implements FileService {
      * @param fullPath  : 저장 전체 경로
      *******************************************************************************************/
     private void remove(String fullPath) {
+        // 기본 경로
+        fullPath = fileConfig.getEndPoint() + fullPath;
+
         // 파일 삭제
         File targetFile = new File(fullPath);
         boolean isRemoved = targetFile.delete();
@@ -262,6 +270,9 @@ public class FileServiceImplForLocal implements FileService {
      *******************************************************************************************/
     private FileInputStream download(String fullPath) {
         try {
+            // 기본 경로
+            fullPath = fileConfig.getEndPoint() + fullPath;
+
             // 반환 Input Stream 설정
             File file = new File(fullPath);
 
@@ -279,6 +290,9 @@ public class FileServiceImplForLocal implements FileService {
      *******************************************************************************************/
     private byte[] get(String fullPath) {
         try {
+            // 기본 경로
+            fullPath = fileConfig.getEndPoint() + fullPath;
+
             // 반환 Input Stream 설정
             File file = new File(fullPath);
 
@@ -302,6 +316,5 @@ public class FileServiceImplForLocal implements FileService {
     private String setFileUploadPath(String saveType, String saveDirPath) {
         return fileConfig.getEndPoint() + "/" + saveType + saveDirPath;
     }
-
 
 }
