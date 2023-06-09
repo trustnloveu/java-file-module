@@ -1,9 +1,10 @@
 package kr.co.ejyang.module_file.service;
 
 import kr.co.ejyang.module_file.config.FileConfig;
-import kr.co.ejyang.module_file.exception.FileUploadException;
+import kr.co.ejyang.module_file.exception.FileModuleException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,21 +18,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class FileServiceImplForLocal implements FileService {
 
     // 프로퍼티 ( prefix = 'file' )
     private final FileConfig fileConfig;
 
-    // 생성자
-    @Autowired
-    FileServiceImplForLocal(FileConfig fileConfig) {
-        this.fileConfig = fileConfig;
-    }
-
     // #########################################################################################
     //                                      [ PUBLIC ]
     // #########################################################################################
+
+    /*******************************************************************************************
+     * 파일 조회
+     * @param fullPath      : 전체 경로
+     *******************************************************************************************/
+    @Override
+    public byte[] getFile(String fullPath) {
+        return get(fullPath);
+    }
 
     /*******************************************************************************************
      * 파일 다운로드 (1) - 경로 Only
@@ -95,7 +100,7 @@ public class FileServiceImplForLocal implements FileService {
                 // 파일 업로드 성공 > 반환 객체 추가
                 uploadedFileList.add(fileDto);
             }
-        } catch (FileUploadException e) {
+        } catch (FileModuleException e) {
             // 파일 업로드 실패 > 기존 업로드 파일 삭제 > 에러 반환
             List<String> saveFullPathList = uploadedFileList.stream()
                     .map(FileDto::getFullPath)
@@ -105,7 +110,7 @@ public class FileServiceImplForLocal implements FileService {
                 remove(path);
             }
 
-            throw new FileUploadException(String.format("다중 파일 업로드에 실패했습니다. ( %s )", targetFileName));
+            throw new FileModuleException(String.format("다중 파일 업로드에 실패했습니다. ( %s )", targetFileName));
         }
 
         // 업로드 파일 정보 반환
@@ -151,7 +156,7 @@ public class FileServiceImplForLocal implements FileService {
                 boolean isDirCreated = dir.mkdirs();
 
                 if (!isDirCreated) {
-                    throw new FileUploadException("지정된 경로에 디렉토리를 생성하는데 실패했습니다.");
+                    throw new FileModuleException("지정된 경로에 디렉토리를 생성하는데 실패했습니다.");
                 }
             }
 
@@ -176,7 +181,7 @@ public class FileServiceImplForLocal implements FileService {
                     .build();
 
         } catch (IOException e) {
-            throw new FileUploadException(String.format("파일 저장에 실패했습니다. ( %s, %s )", saveDirPath, file.getOriginalFilename()));
+            throw new FileModuleException(String.format("파일 저장에 실패했습니다. ( %s, %s )", saveDirPath, file.getOriginalFilename()));
         }
     }
 
@@ -205,7 +210,7 @@ public class FileServiceImplForLocal implements FileService {
                 boolean isDirCreated = dir.mkdirs();
 
                 if (!isDirCreated) {
-                    throw new FileUploadException("지정된 경로에 디렉토리를 생성하는데 실패했습니다.");
+                    throw new FileModuleException("지정된 경로에 디렉토리를 생성하는데 실패했습니다.");
                 }
             }
 
@@ -230,7 +235,7 @@ public class FileServiceImplForLocal implements FileService {
                     .build();
 
         } catch (IOException e) {
-            throw new FileUploadException(String.format("파일 저장에 실패했습니다. ( %s, %s )", saveDirPath, fileName));
+            throw new FileModuleException(String.format("파일 저장에 실패했습니다. ( %s, %s )", saveDirPath, fileName));
         }
     }
 
@@ -246,7 +251,7 @@ public class FileServiceImplForLocal implements FileService {
 
         // 파일 삭제 실패
         if (!isRemoved) {
-            throw new FileUploadException(String.format("해당 경로에 파일이 존재하지 않습니다. ( %s )", fullPath));
+            throw new FileModuleException(String.format("해당 경로에 파일이 존재하지 않습니다. ( %s )", fullPath));
         }
     }
 
@@ -262,7 +267,28 @@ public class FileServiceImplForLocal implements FileService {
 
             return new FileInputStream(file);
         } catch (FileNotFoundException e) {
-            throw new FileUploadException(String.format("해당 경로에 파일이 존재하지 않습니다. ( %s )", fullPath));
+            throw new FileModuleException(String.format("해당 경로에 파일이 존재하지 않습니다. ( %s )", fullPath));
+        }
+
+    }
+
+    /*******************************************************************************************
+     * 파일 조회
+     *
+     * @param fullPath  : 저장 전체 경로
+     *******************************************************************************************/
+    private byte[] get(String fullPath) {
+        try {
+            // 반환 Input Stream 설정
+            File file = new File(fullPath);
+
+            // InputStream
+            InputStream inputStream = new FileInputStream(file);
+
+            // byte[]
+            return IOUtils.toByteArray(inputStream);
+        } catch (IOException e) {
+            throw new FileModuleException(String.format("해당 경로의 파일을 읽어올 수 없습니다. ( %s )", fullPath));
         }
 
     }
